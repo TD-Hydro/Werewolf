@@ -3,7 +3,7 @@ include "db.php";
 $room = $_GET['room'];
 if (isset($_GET['start'])) {
     $handle = $handle = Connection();
-    $result = $handle->exec("UPDATE Running SET start=1 WHERE RmNo=$room");
+    $result = $handle->query("UPDATE Running SET start=1 WHERE RmNo=$room");
     if ($result) {
         echo ("success");
     } else {
@@ -15,7 +15,7 @@ if (isset($_GET['start'])) {
     $handle = $handle = Connection();
     $result = $handle->query("SELECT '$role' FROM Running WHERE RmNo=$room");
     $prepared = 0;
-    while ($r = $result->fetchArray()) {
+    while ($r = $result->fetch_assoc()) {
         $prepared = $r[$role];
     }
     echo $prepared;
@@ -26,7 +26,7 @@ if (isset($_GET['start'])) {
     $handle = $handle = Connection();
     $result = $handle->query("SELECT '$item','$item2','$item3' FROM Running WHERE RmNo=$room");
     $prepared = "";
-    while ($r = $result->fetchArray()) {
+    while ($r = $result->fetch_assoc()) {
         $prepared = $r[$item] . " " . $r[$item2]. " " .$r[$item3];
     }
     echo $prepared;

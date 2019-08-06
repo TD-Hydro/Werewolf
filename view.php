@@ -10,9 +10,9 @@ if ($role == "g-seer") {
     $handle = Connection();
     $id = $post["board"];
     $check = $handle->query("SELECT Role FROM Player WHERE RmNo=$room AND No=$id");
-    if ($c = $check->fetchArray()) {
+    if ($c = $check->fetch_assoc()) {
         $ms = $c["Role"];
-        $handle->exec("SELECT Role FROM Player WHERE RmNo=$room AND No=$id");
+        $handle->query("SELECT Role FROM Player WHERE RmNo=$room AND No=$id");
         echo $ms;
     }
 }

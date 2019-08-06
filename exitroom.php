@@ -5,7 +5,7 @@ $room = (int)$_GET['room'];
 $user = $_GET['user'];
 
 $handle = Connection();
-$result = $handle->exec("DELETE FROM Player WHERE RmNo=$room AND Username='$user'");
+$result = $handle->query("DELETE FROM Player WHERE RmNo=$room AND Username='$user'");
 
 $handle->close();
 

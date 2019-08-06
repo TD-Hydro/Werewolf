@@ -1,0 +1,31 @@
+.float-btn{
+    margin : 0;
+    width: 24.5%;
+    float: left;
+    padding-left: 0;
+    padding-right: 0
+}
+.horizonbutton {
+    width:99%;
+    margin:0 auto;
+    clear: both;
+}
+.single-msg{
+    color: red;
+    text-align: center
+}
+
+h3{
+    text-align: center
+}
+
+.hide-choose{
+    display: none !important;
+}
+
+.custom-label-flipswitch.ui-flipswitch .ui-btn.ui-flipswitch-on {
+    text-indent: -3.4em;
+}
+.custom-label-flipswitch.ui-flipswitch .ui-flipswitch-off {
+    text-indent: 0.5em;
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <title>创建房间</title>
+</head>
+
+<body>
+    <div class="ui-pannel-wrapper">
+        <div class="ui-header ui-bar-inherit" data-role="header">
+            <h1 class="ui-title">
+                创建房间
+            </h1>
+        </div>
+        <div class="ui-content">
+            <div class="ui-bar ui-bar-a ui-corner-all">
+                <p>角色</p>
+                <div class="ui-body ui-body-a">
+                    <form action="create.php" method="post" data-ajax="false">
+                        <fieldset data-role="controlgroup" data-type="horizontal">
+                            <legend>神牌</legend>
+                            <input type="checkbox" name="g-seer" id="g-seer">
+                            <label for="g-seer">预言家</label>
+                            <input type="checkbox" name="g-witch" id="g-witch">
+                            <label for="g-witch">女巫</label>
+                            <input type="checkbox" name="g-hunter" id="g-hunter">
+                            <label for="g-hunter">猎人</label>
+                            <input type="checkbox" name="g-idiot" id="g-idiot">
+                            <label for="g-idiot">白痴</label>
+                            <input type="checkbox" name="g-knight" id="g-knight">
+                            <label for="g-knight">骑士</label>
+                            <input type="checkbox" name="g-guard" id="g-guard">
+                            <label for="g-guard">守卫</label>
+                            <!--
+                            <input type="checkbox" name="g-dreamtaker" id="g-dreamtaker">
+                            <label for="g-dreamtaker">摄梦人</label>
+                        -->
+                        </fieldset>
+
+                        <fieldset data-role="controlgroup" data-type="horizontal">
+                            <legend>狼牌</legend>
+                            <input type="checkbox" name="w-white" id="w-white">
+                            <label for="w-white">白狼王</label>
+                            <input type="checkbox" name="w-hidden" id="w-hidden">
+                            <label for="w-hidden">隐狼</label>
+                            <input type="checkbox" name="w-king" id="w-king">
+                            <label for="w-king">狼王</label>
+                            <input type="checkbox" name="w-devil" id="w-devil">
+                            <label for="w-devil">恶魔</label>
+                            <!--
+                            <input type="checkbox" name="w-beauty" id="w-beauty">
+                            <label for="w-beauty">狼美人</label>
+                            -->
+                            <input type="checkbox" name="w-knight" id="w-knight">
+                            
+                            <label for="w-knight">恶灵骑士</label>
+                        </fieldset>
+                        <fieldset data-role="controlgroup">
+                            <legend>普通狼</legend>
+                            <label for="n-werewolf">普通狼</label>
+                            <input type="range" name="n-werewolf" id="n-werewolf" min="0" max="10" value="1">
+                        </fieldset>
+                        <fieldset data-role="controlgroup">
+                            <legend>平民</legend>
+                            <label for="n-folk">平民</label>
+                            <input type="range" name="n-folk" id="n-folk" min="0" max="10" value="1">
+                        </fieldset>
+                        <div class="ui-field-contain">
+                            <label for="username">玩家昵称</label>
+                            <input type="text" name="username" id="username" value="" placeholder="Player name">
+                        </div>
+                        <input type="submit" value='提交'>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

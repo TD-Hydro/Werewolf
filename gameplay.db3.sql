@@ -48,7 +48,7 @@ INSERT INTO `Running` VALUES (7,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
 INSERT INTO `Running` VALUES (26,2,-4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,-4,0,1,0,0);
 INSERT INTO `Game` VALUES (7,'g-seer;g-witch',1,1,4,'yse00','0',0,'yse00');
 INSERT INTO `Game` VALUES (26,'g-seer;g-witch',2,2,6,'78','0',0,'78');
-INSERT INTO `Player` VALUES ('yse00','',7,'2',1);werewolf
+INSERT INTO `Player` VALUES ('yse00','',7,'2',1);
 INSERT INTO `Player` VALUES ('ys','',7,'3',2);
 INSERT INTO `Player` VALUES ('dd','',7,'4',3);
 INSERT INTO `Player` VALUES ('18','',7,'1',4);

@@ -28,21 +28,18 @@ if ($handle->connect_error) {
     echo("Connection failed: " . $handle->connect_error);
 }
 $rm = $handle->query("SELECT RmNo FROM Game WHERE RmNo=$roomNo");
-if ($rm){
+if ($rm->num_rows >= 1){
     $handle->query("DELETE FROM Game WHERE RmNo=$roomNo");
     $handle->query("DELETE FROM Running WHERE RmNo=$roomNo");
     $handle->query("DELETE FROM Player WHERE RmNo=$roomNo");
     $result = 1;
 }
 else{
-    $res = $handle->query("INSERT INTO Game VALUES($roomNo, \"$addRole\", $werewolves, $folks, $roleNo, \"$creator\", \"0\", 0,\"$creator\")") or die($handle->error);
+    $result = $handle->query("INSERT INTO Game VALUES($roomNo, '$addRole', $werewolves, $folks, $roleNo, '$creator', '0', 0,'$creator')") or die($handle->error);
     $handle->query("INSERT INTO Running (RmNo,death1,death2,death3,start) VALUES($roomNo,0,0,0,0)");
-    while ($row = $res->fetch_assoc()) {
-        echo($row);
-    }
     foreach ($postKeys as $value) {
         if ($value != 'n-werewolf' && $value != 'n-folk' && $value != 'username') {
-            $handle->query("UPDATE Running SET \"$value\"=0 WHERE RmNo=$roomNo");
+            $handle->query("UPDATE Running SET '$value'=0 WHERE RmNo=$roomNo");
         }
     }
 }
@@ -50,6 +47,6 @@ else{
 $handle->close();
 
 
-if ($result >= 1) {
-    //echo ("<script>location.href='room.html?room=$roomNo&user=$creator'</script>");
+if ($result) {
+    echo ("<script>location.href='room.html?room=$roomNo&user=$creator'</script>");
 } else echo "error";

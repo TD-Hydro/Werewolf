@@ -1,11 +1,12 @@
 <?php
+include "db.php";
 $post = $_GET;
 
 $roomNo = $post["room"];
 $playNo = $post['playerNo'];
 $newArray = array();
 
-$handle = new SQLite3("gameplay.db3");
+$handle = $handle = Connection();
 $users = $handle->query("SELECT * FROM Player WHERE RmNo=$roomNo");
 $i=1;
 while ($u = $users->fetchArray()) {
@@ -24,7 +25,7 @@ while ($r = $runners->fetchArray()) {
     for ($i = 1; $i < $cols; $i++) { 
         if($r[$i] != NULL){
             $columnName = $runners->columnName($i);
-            $handle->exec("UPDATE Running SET \"$columnName\"=0 WHERE RmNo=$roomNo" );
+            $handle->exec("UPDATE Running SET '$columnName'=0 WHERE RmNo=$roomNo" );
         }
         
     }

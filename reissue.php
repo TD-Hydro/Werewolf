@@ -25,7 +25,7 @@ while ($r = $runners->fetch_assoc()) {
     for ($i = 1; $i < $cols; $i++) { 
         if($r[$i] != NULL){
             $columnName = $runners->columnName($i);
-            $handle->query("UPDATE Running SET '$columnName'=0 WHERE RmNo=$roomNo" );
+            $handle->query("UPDATE Running SET `$columnName`=0 WHERE RmNo=$roomNo" );
         }
         
     }

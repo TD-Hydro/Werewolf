@@ -13,7 +13,7 @@ if (isset($_GET['start'])) {
 } else if (isset($_GET['verify'])) {
     $role = $_GET['role'];
     $handle = $handle = Connection();
-    $result = $handle->query("SELECT '$role' FROM Running WHERE RmNo=$room");
+    $result = $handle->query("SELECT `$role` FROM Running WHERE RmNo=$room");
     $prepared = 0;
     while ($r = $result->fetch_assoc()) {
         $prepared = $r[$role];
@@ -24,7 +24,7 @@ if (isset($_GET['start'])) {
     $item2 = $_GET['item2'];
     $item3 = $_GET['item3'];
     $handle = $handle = Connection();
-    $result = $handle->query("SELECT '$item','$item2','$item3' FROM Running WHERE RmNo=$room");
+    $result = $handle->query("SELECT `$item`, `$item2`, `$item3` FROM Running WHERE RmNo=$room");
     $prepared = "";
     while ($r = $result->fetch_assoc()) {
         $prepared = $r[$item] . " " . $r[$item2]. " " .$r[$item3];

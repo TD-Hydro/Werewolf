@@ -25,12 +25,12 @@ if ($role == "w") {
     $result2 = true;
     $handle = Connection();
     if (isset($post["flip-checkbox"]) &&  $post["flip-checkbox"] == "on") {
-        $result1 = $handle->query("UPDATE Running SET death1=0, 'g-witch'=w WHERE RmNo=$room");
+        $result1 = $handle->query("UPDATE Running SET death1=0, `g-witch`=w WHERE RmNo=$room");
     }
 
     if (isset($post["board"])) {
         $id = substr($post["board"], 6);
-        $result2 = $handle->query("UPDATE Running SET death2=$id, 'g-witch'=w WHERE RmNo=$room");
+        $result2 = $handle->query("UPDATE Running SET death2=$id, `g-witch`=w WHERE RmNo=$room");
     }
     $result3 = $handle->query("UPDATE Running SET w=-w WHERE RmNo=$room");
     if ($result1 && $result2) {
@@ -41,7 +41,7 @@ if ($role == "w") {
 } else if ($role == "g-seer") {
     $board = $post["board"];
     $handle = Connection();
-    $result = $handle->query("UPDATE Running SET 'g-witch'=-'g-witch', 'g-seer'=$board WHERE RmNo=$room");
+    $result = $handle->query("UPDATE Running SET `g-witch`=-`g-witch`, `g-seer`=$board WHERE RmNo=$room");
 
     if ($result) {
         echo ("success");

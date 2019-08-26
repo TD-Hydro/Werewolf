@@ -1,0 +1,41 @@
+function GetCurrentOrder(selfRole, callback) {
+    //werewolf as a whole
+    if (selfRole[0] == "w") {
+        if (selfRole[1] == "-") {
+            CheckPredecessorStatus('w', function (data, status) {
+                if (data < 0) {
+                    m = roleOrder.indexOf(selfRole);
+                    if (m == -1)
+                        callback(0, 0);
+                    for (let i = m - 1; i >= 0; i--) {
+                        if (currentRoleList.indexOf(roleOrder[i]) != -1 || roleOrder[i] == "w") {
+                            CheckPredecessorStatus(roleOrder[i], callback);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        else {
+            CheckPredecessorStatus('start', callback);
+        }
+    }
+    if (selfRole[0] == "w" && selfRole[1] == "-") {
+        callback(0, 0);
+    }
+    else if (selfRole == 'g-magician') {
+        CheckPredecessorStatus('start', callback);
+    }
+    else {
+        m = roleOrder.indexOf(selfRole);
+        if (m == -1)
+            callback(0, 0);
+        for (let i = m - 1; i >= 0; i--) {
+            //if (currentRoleList.indexOf(roleOrder[i]) != -1 || roleOrder[i] == "w") {
+            if (currentRoleList.indexOf(roleOrder[i]) != -1) {
+                CheckPredecessorStatus(roleOrder[i], callback);
+                break;
+            }
+        }
+    }
+}

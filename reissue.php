@@ -20,7 +20,7 @@ while ($u = $users->fetch_assoc()) {
 }
 
 $runners = $handle->query("SELECT * FROM Running WHERE RmNo=$roomNo");
-$cols = $runners->numColumns(); 
+$cols = $runners->field_count; 
 while ($r = $runners->fetch_assoc()) {
     for ($i = 1; $i < $cols; $i++) { 
         if($r[$i] != NULL){

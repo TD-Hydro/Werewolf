@@ -1,7 +1,15 @@
 $(document).ready(function () {
+    //DeletePopup();
     RoomInfo(GetUrlParam("room"), GetUrlParam("user"));
     ButtonFunction();
 });
+
+function DeletePopup(){
+    var ir = window.location.href.indexOf("#");
+    if(ir != -1){
+        window.location.href = window.location.href.substr(0,ir);
+    }
+}
 
 function GetUrlParam(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
@@ -11,6 +19,7 @@ function GetUrlParam(name) {
 
 var role = "";
 var currentRoleList = [];
+var preRole = "";
 var player = 0;
 
 function RoomInfo(room, username) {
@@ -21,6 +30,9 @@ function RoomInfo(room, username) {
         let playerList = r.playerList;
         let selfNo = r.No;
         let creator = r.creator;
+
+
+        GetPreviousRole(currentRoleList[role - 1]);
 
         if (role == -1) {
             alert("房间已满！");
@@ -54,6 +66,8 @@ function RoomInfo(room, username) {
             }
         }
         $('#b-room').val(room);
+        $('#b-prev').val(preRole);
+        $('#b-self').val(username);
         $('#playerlist').listview();
         $("div").trigger('create');
         $('#exitRm').val(username);
@@ -87,7 +101,6 @@ function ButtonFunction() {
                 }
             }
             if (deadInfo != "") {
-                alert(deadInfo);
                 $("#info-msg").html("昨夜被袭击的是：" + deadInfo);
             }
             else
@@ -184,8 +197,8 @@ function PrepareChooseBoard(selfRole) {
         $("#b-info").val("w");
         $('#popChooseBoard').popup('open');
     }
-    if (selfRole[0] == "w" && selfRole[1] == "-") {
-    }
+    //if (selfRole[0] == "w" && selfRole[1] == "-") {
+    //}
     else if (selfRole == "g-witch") {
         //女巫
         $.get("play.php", { acquire3: true, item: "death1", item2: "g-witch", item3: "death2", room: GetUrlParam('room') }, function (data, status) {
@@ -238,11 +251,51 @@ function PrepareChooseBoard(selfRole) {
                 }
                 $("#info-msg").html("他是 " + goodGuy);
                 $.get("operation.php", {
-                    "b-info": "g-seer", "b-room": GetUrlParam('room'), board: idCheck
+                    "b-info": "g-seer", "b-prev":preRole, "b-room": GetUrlParam('room'), "b-self":GetUrlParam('user'), board: idCheck
                 }, function (data, status) {
                 });
             });
         });
+    }
+
+    else if (selfRole == "w-devil") {
+        $("#chooseTitle").html("恶魔");
+        $("#small-title").html("请选择你要查验的对象：");
+        $('#witch-save').addClass("hide-choose");
+        $('#b-submit').addClass("hide-choose");
+        $('#b-check').removeClass("hide-choose");
+        $("#b-info").val("w-devil");
+        $('#popChooseBoard').popup('open');
+        $('#b-check').click(function () {
+            var idCheck = $(".ui-radio-on").html().split('.')[0];
+            $('#b-check').prop("disabled", true);
+            $.get("view.php", {
+                role: "w-devil",
+                board: idCheck,
+                room: GetUrlParam('room')
+            }, function (data, status) {
+                alert(data);
+                var goodGuy = "平民";
+                if (currentRoleList[data - 1][0] == "g") {
+                    goodGuy = "神职"
+                }
+                $("#info-msg").html("他是 " + goodGuy);
+                $.get("operation.php", {
+                    "b-info": "w-devil", "b-prev":preRole, "b-room": GetUrlParam('room'), "b-self":GetUrlParam('user'), board: idCheck
+                }, function (data, status) {
+                });
+            });
+        });
+    }
+    
+    else if (selfRole == "g-guard"){
+        $("#chooseTitle").html("守卫");
+        $("#small-title").html("请选择你要守护的对象：");
+        $('#witch-save').addClass("hide-choose");
+        $('#b-submit').removeClass("hide-choose");
+        $('#b-check').addClass("hide-choose");
+        $("#b-info").val("g-guard");
+        $('#popChooseBoard').popup('open');
     }
 }
 
@@ -252,45 +305,30 @@ function CheckPredecessorStatus(preRole, callback) {
     $.get("play.php", { role: preRole, verify: true, room: GetUrlParam('room') }, callback);
 }
 
-function GetCurrentOrder(selfRole, callback) {
-    //werewolf as a whole
-    if (selfRole[0] == "w") {
-        if (selfRole[1] == "-") {
-            CheckPredecessorStatus('w', function (data, status) {
-                if (data < 0) {
-                    m = roleOrder.indexOf(selfRole);
-                    if (m == -1)
-                        callback(0, 0);
-                    for (let i = m - 1; i >= 0; i--) {
-                        if (currentRoleList.indexOf(roleOrder[i]) != -1 || roleOrder[i] == "w") {
-                            CheckPredecessorStatus(roleOrder[i], callback);
-                            break;
-                        }
-                    }
-                }
-            });
-        }
-        else {
-            CheckPredecessorStatus('start', callback);
-        }
+function GetPreviousRole(selfRole){
+    m = roleOrder.indexOf(selfRole);
+    if (m == -1 || m == 0)
+    {
+        preRole = "start";
     }
-    if (selfRole[0] == "w" && selfRole[1] == "-") {
-        callback(0, 0);
-    }
-    else if (selfRole == 'g-magician') {
-        CheckPredecessorStatus('start', callback);
-    }
-    else {
-        m = roleOrder.indexOf(selfRole);
-        if (m == -1)
-            callback(0, 0);
-        for (let i = m - 1; i >= 0; i--) {
-            if (currentRoleList.indexOf(roleOrder[i]) != -1 || roleOrder[i] == "w") {
-                CheckPredecessorStatus(roleOrder[i], callback);
+    else{
+        let i = m - 1;
+        for (; i >= 0; i--){
+            if(currentRoleList.indexOf(roleOrder[i]) != -1){
+                preRole = roleOrder[i];
                 break;
             }
         }
+        if(i == -1){
+            preRole = "start";
+        }
     }
+}
+
+function GetCurrentOrder(selfRole, callback) {
+    alert(preRole);
+    CheckPredecessorStatus(preRole, callback);
+
 }
 
 

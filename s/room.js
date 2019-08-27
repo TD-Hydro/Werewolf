@@ -18,23 +18,32 @@ function GetUrlParam(name) {
     if (r != null) return unescape(r[2]); return null; //返回参数值
 }
 
+//Global Variables
 var role = "";
 var currentRoleList = [];
 var preRole = "";
 var player = 0;
 
+//Write room info to room.html
 function RoomInfo(room, username) {
     $.get("room.php", { room: room, user: username }, function (data, status) {
+        //Get information
         var r = JSON.parse(data);
+        //Self role, in number form (role number)
         role = r.selfRole;
+        //Role list, in string from
         currentRoleList = r.roleList;
+        //Player list
         let playerList = r.playerList;
+       //Self no, in number form (player number)
         let selfNo = r.No;
+        //Creator, in string form
         let creator = r.creator;
 
-
+        //Get previous role
         GetPreviousRole(currentRoleList[role - 1]);
 
+        //Check if some unusual situation
         if (role == -1) {
             alert("房间已满！");
             window.history.back();
@@ -43,15 +52,18 @@ function RoomInfo(room, username) {
             alert("该房间不存在！");
             window.history.back();
         }
+        //Write check role popup, translate role into chinese
         else {
             $("#popRole").find(".single-msg").html(RoleSearch(currentRoleList[role - 1]));
         }
 
+        //Number of players
         player = r.playerNo;
+        //Write html room information
         $('#title').append("房间号：" + room);
         $('#i-room').val(room);
         $('#i-user').val(username);
-        //append user
+        //Append user to list and choose board
         for (let i = 1; i <= player; i++) {
             if (selfNo == i) {
                 $('#playerlist').append("<li>" + username + "</li>");
@@ -66,32 +78,36 @@ function RoomInfo(room, username) {
                 $('#chooseBoard').append("<label><input type=\"radio\" name=\"board\" value=\"board-" + i + "\">" + i + "</label>");
             }
         }
+        //Write submitting information
         $('#b-room').val(room);
         $('#b-prev').val(preRole);
         $('#b-self').val(username);
+        //Make jQuery ui list
         $('#playerlist').listview();
         $("div").trigger('create');
+        //Prepare exit information
         $('#exitRm').val(username);
 
-        //no one can see creator ctrl
+        //Creator control
+        //Only creator can see the owner buttons
         if (creator != username) {
             $('.owner').css('display', 'none');
         }
+        //only creator can play sound
         else{
-            //only creator can play sound
-            CheckOngoingProcess();
+            CheckOngoingProcessAndPlayVoice();
         }
     });
 }
 
 function ButtonFunction() {
-    $("#reisssue").click(function () {
+    $("#reissue").click(function () {
         location.href = "reissue.php?room=" + GetUrlParam('room') + "&playerNo=" + player;
     });
     $("#refresh").click(function () {
         location.reload()
     });
-    $("#nightinfo").click(function () {
+    $("#nightInfo").click(function () {
         $("#chooseTitle").html("昨夜信息");
         $("#chooseBoardForm").addClass("hide-choose");
         $('#witch-save').addClass("hide-choose");
@@ -196,8 +212,35 @@ var roleList = {
 var roleOrder = ['g-magician', 'w', 'w-devil', 'w-beauty', 'g-witch', 'g-guard', 'g-seer', 'g-dreamtaker'];
 
 function PrepareChooseBoard(selfRole) {
-
-    if (selfRole[0] == 'w') {
+    if (selfRole == "w-devil") {
+        $("#chooseTitle").html("恶魔");
+        $("#small-title").html("请选择你要查验的对象：");
+        $('#witch-save').addClass("hide-choose");
+        $('#b-submit').addClass("hide-choose");
+        $('#b-check').removeClass("hide-choose");
+        $("#b-info").val("w-devil");
+        $('#popChooseBoard').popup('open');
+        $('#b-check').click(function () {
+            var idCheck = $(".ui-radio-on").html().split('.')[0];
+            $('#b-check').prop("disabled", true);
+            $.get("view.php", {
+                role: "w-devil",
+                board: idCheck,
+                room: GetUrlParam('room')
+            }, function (data, status) {
+                var goodGuy = "平民";
+                if (currentRoleList[data - 1][0] == "g") {
+                    goodGuy = "神职"
+                }
+                $("#info-msg").html("他是 " + goodGuy);
+                $.get("operation.php", {
+                    "b-info": "w-devil", "b-prev":preRole, "b-room": GetUrlParam('room'), "b-self":GetUrlParam('user'), board: idCheck
+                }, function (data, status) {
+                });
+            });
+        });
+    }
+    else if (selfRole[0] == 'w') {
         $("#chooseTitle").html("狼人");
         $("#small-title").html("请选择你要袭击的对象：");
         $('#witch-save').addClass("hide-choose");
@@ -205,8 +248,6 @@ function PrepareChooseBoard(selfRole) {
         $("#b-info").val("w");
         $('#popChooseBoard').popup('open');
     }
-    //if (selfRole[0] == "w" && selfRole[1] == "-") {
-    //}
     else if (selfRole == "g-witch") {
         //女巫
         $.get("play.php", { acquire3: true, item: "death1", item2: "g-witch", item3: "death2", room: GetUrlParam('room') }, function (data, status) {
@@ -265,34 +306,7 @@ function PrepareChooseBoard(selfRole) {
         });
     }
 
-    else if (selfRole == "w-devil") {
-        $("#chooseTitle").html("恶魔");
-        $("#small-title").html("请选择你要查验的对象：");
-        $('#witch-save').addClass("hide-choose");
-        $('#b-submit').addClass("hide-choose");
-        $('#b-check').removeClass("hide-choose");
-        $("#b-info").val("w-devil");
-        $('#popChooseBoard').popup('open');
-        $('#b-check').click(function () {
-            var idCheck = $(".ui-radio-on").html().split('.')[0];
-            $('#b-check').prop("disabled", true);
-            $.get("view.php", {
-                role: "w-devil",
-                board: idCheck,
-                room: GetUrlParam('room')
-            }, function (data, status) {
-                var goodGuy = "平民";
-                if (currentRoleList[data - 1][0] == "g") {
-                    goodGuy = "神职"
-                }
-                $("#info-msg").html("他是 " + goodGuy);
-                $.get("operation.php", {
-                    "b-info": "w-devil", "b-prev":preRole, "b-room": GetUrlParam('room'), "b-self":GetUrlParam('user'), board: idCheck
-                }, function (data, status) {
-                });
-            });
-        });
-    }
+    
     
     else if (selfRole == "g-guard"){
         $("#chooseTitle").html("守卫");
@@ -337,7 +351,7 @@ function GetCurrentOrder(selfRole, callback) {
 }
 
 
-function CheckOngoingProcess() {
+function CheckOngoingProcessAndPlayVoice() {
     let functionalRole = [];
     let intervalId = [];
     for (let index = 0; index < roleOrder.length; index++) {
@@ -350,7 +364,7 @@ function CheckOngoingProcess() {
     $.get("play.php", {
         ongoing: true, room: GetUrlParam('room')
     }, function (data, status) {
-        let r = $.parseJSON(data);
+        let r = JSON.parse(data);
         if (parseInt(r.start) != 0) {
             let startingIndex = -1;
             for (let index = 0; index < functionalRole.length; index++) {

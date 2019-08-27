@@ -28,7 +28,7 @@ if ($handle->connect_error) {
     echo("Connection failed: " . $handle->connect_error);
 }
 $rm = $handle->query("SELECT RmNo FROM Game WHERE RmNo=$roomNo");
-if ($rm->num_rows >= 1){
+if ($handle->affected_rows >= 1){
     $handle->query("DELETE FROM Game WHERE RmNo=$roomNo");
     $handle->query("DELETE FROM Running WHERE RmNo=$roomNo");
     $handle->query("DELETE FROM Player WHERE RmNo=$roomNo");
@@ -39,7 +39,7 @@ else{
     $handle->query("INSERT INTO Running (RmNo,death1,death2,death3,start) VALUES($roomNo,0,0,0,0)");
     foreach ($postKeys as $value) {
         if ($value != 'n-werewolf' && $value != 'n-folk' && $value != 'username') {
-            $handle->query("UPDATE Running SET '$value'=0 WHERE RmNo=$roomNo");
+            $handle->query("UPDATE Running SET `$value`=0 WHERE RmNo=$roomNo");
         }
     }
 }

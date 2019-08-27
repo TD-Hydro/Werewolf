@@ -30,18 +30,19 @@ else if ($role == "g-witch") {
     $result2 = 0;
     $handle = Connection();
 
+    $handle->query("UPDATE Running SET `g-witch`=100, `$preRole`=-`$preRole` WHERE RmNo=$room");
+    $result3 = $handle->affected_rows;
     if (isset($post["board"])) {
         $id = substr($post["board"], 6);
-        $handle->query("UPDATE Running SET death2=$id, `g-witch`=100 WHERE RmNo=$room");
+        $handle->query("UPDATE Running SET death2=$id WHERE RmNo=$room");
         $result2 = $handle->affected_rows;
     }
     if (isset($post["flip-checkbox"]) && $post["flip-checkbox"] == "on") {
         $handle->query("UPDATE Running SET `g-witch`=death1, death1=0 WHERE RmNo=$room");
         $result1 = $handle->affected_rows;
     }
-    $handle->query("UPDATE Running SET `$preRole`=-`$preRole` WHERE RmNo=$room");
-    $result3 = $handle->affected_rows;
-    if ($result1 > 0 || $result2 > 0) {
+
+    if ($result1 > 0 || $result2 > 0 || $result3 > 0) {
         echo ("<script>location.href='room.html?room=$room&user=$self'</script>");
     } else {
         echo ("error");
@@ -87,6 +88,20 @@ else if ($role == "g-guard") {
     //
     if ($handle->affected_rows > 0) {
         echo ("<script>location.href='room.html?room=$room&user=$self'</script>");
+    } else {
+        echo ("error");
+    }
+}
+
+
+//预言家
+else if ($role == "w-devil") {
+    $board = $post["board"];
+    $handle = Connection();
+    $result = $handle->query("UPDATE Running SET `$preRole`=-`$preRole`, `w-devil`=$board WHERE RmNo=$room");
+
+    if ($result->affected_rows > 0) {
+        echo ("success");
     } else {
         echo ("error");
     }

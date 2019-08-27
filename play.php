@@ -27,18 +27,16 @@ if (isset($_GET['start'])) {
     $result = $handle->query("SELECT `$item`, `$item2`, `$item3` FROM Running WHERE RmNo=$room");
     $prepared = "";
     while ($r = $result->fetch_assoc()) {
-        $prepared = $r[$item] . " " . $r[$item2]. " " .$r[$item3];
+        $prepared = $r[$item] . " " . $r[$item2] . " " . $r[$item3];
     }
     echo $prepared;
-} else if (isset($_GET['ongoing'])){
+} else if (isset($_GET['ongoing'])) {
     $handle = $handle = Connection();
     $result = $handle->query("SELECT * FROM Running WHERE RmNo=$room");
     while ($r = $result->fetch_assoc()) {
         $prepared = $r;
     }
     echo json_encode($prepared);
-}
-else{
+} else {
 
 }
-

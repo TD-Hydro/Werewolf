@@ -20,14 +20,11 @@ while ($u = $users->fetch_assoc()) {
 }
 
 $runners = $handle->query("SELECT * FROM Running WHERE RmNo=$roomNo");
-$cols = $runners->field_count; 
-while ($r = $runners->fetch_assoc()) {
-    for ($i = 1; $i < $cols; $i++) { 
-        if($r[$i] != NULL){
-            $columnName = $runners->columnName($i);
-            $handle->query("UPDATE Running SET `$columnName`=0 WHERE RmNo=$roomNo" );
-        }
-        
+#$cols = $runners->field_count; 
+if ($r = $runners->fetch_assoc()) {
+    foreach($r as $key=>$value){
+        if($value != NULL and $key != "RmNo")
+        $handle->query("UPDATE Running SET `$key`=0 WHERE RmNo=$roomNo" );
     }
 }
 

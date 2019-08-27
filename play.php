@@ -4,7 +4,7 @@ $room = $_GET['room'];
 if (isset($_GET['start'])) {
     $handle = $handle = Connection();
     $result = $handle->query("UPDATE Running SET start=1 WHERE RmNo=$room");
-    if ($result) {
+    if ($handle->affected_rows > 0) {
         echo ("success");
     } else {
         echo ("error");
@@ -30,6 +30,15 @@ if (isset($_GET['start'])) {
         $prepared = $r[$item] . " " . $r[$item2]. " " .$r[$item3];
     }
     echo $prepared;
-} else {
+} else if (isset($_GET['ongoing'])){
+    $handle = $handle = Connection();
+    $result = $handle->query("SELECT * FROM Running WHERE RmNo=$room");
+    while ($r = $result->fetch_assoc()) {
+        $prepared = $r;
+    }
+    echo json_encode($prepared);
+}
+else{
+
 }
 

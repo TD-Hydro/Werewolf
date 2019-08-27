@@ -45,6 +45,7 @@ while ($li = $listInfo->fetch_assoc()) {
     $a['playerList'][(int)$li["No"]] = $li["Username"];
 }
 
+
 if ($a['selfRole'] == -2) {
     $role = array();
     $maxNo = 0;
@@ -56,20 +57,23 @@ if ($a['selfRole'] == -2) {
             
         }
     }
+
     if (count($role) >= $a['playerNo']) {
         $a['selfRole'] = -1;
     } else {
         $newRole = rand(1, $a['playerNo']);
+        echo $newRole;
+
         while (in_array($newRole, $role)) {
             $newRole = rand(1, $a['playerNo']);
         }
         $maxNo += 1;
         $handle->query("INSERT INTO Player VALUES('$user', '', $room, $newRole, $maxNo)");
+
         $a['selfRole'] = $newRole;
         $a['No'] = $maxNo;
         
     }
 }
-$handle->close();
 
 echo json_encode($a);
